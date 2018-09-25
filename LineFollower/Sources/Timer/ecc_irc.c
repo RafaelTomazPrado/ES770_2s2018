@@ -1,4 +1,4 @@
-#include "tc_hal.h"
+#include "ecc_irc.h"
 
 /* system includes */
 #include "fsl_lptmr_driver.h"
