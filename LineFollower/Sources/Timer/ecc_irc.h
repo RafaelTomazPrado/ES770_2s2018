@@ -25,7 +25,7 @@
 /*                    uiTimeInUs                    */
 /* Output params:     n/a                           */
 /* ************************************************ */
-void ecc_installIrc(uint32_t uiTimeInUs, lptmr_callback_t tUserCallback);
+void ecc_installISR(uint32_t uiTimeInUs, lptmr_callback_t tUserCallback);
 
 
 #endif /* ECC_IRC_H */

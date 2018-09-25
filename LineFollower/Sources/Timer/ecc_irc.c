@@ -50,7 +50,7 @@ void LPTMR0_IRQHandler(void)
 /*                     uiTimeInUs                   */
 /* Output params:      n/a                          */
 /* ************************************************ */
-void ecc_installIrc(uint32_t uiTimeInUs, lptmr_callback_t tUserCallback)
+void ecc_installISR(uint32_t uiTimeInUs, lptmr_callback_t tUserCallback)
 {
     /* Initialize LPTMR */
     LPTMR_DRV_Init(LPTMR0_IDX, &lptmrState, &lptmrConfig);
