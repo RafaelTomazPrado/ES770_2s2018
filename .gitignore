@@ -1,11 +1,11 @@
 
 \.DS_Store
-LineFollower/.settings
-LineFollower/Debug
-LineFollower/Project_Settings
-LineFollower/SDK
-LineFollower/.cproject
-LineFollower/.cwGeneratedFileSetLog
-LineFollower/.project
+.settings
+Debug
+Project_Settings
+SDK
+.cproject
+.cwGeneratedFileSetLog
+.project
 RemoteSystemsTempFiles
 .metadata
