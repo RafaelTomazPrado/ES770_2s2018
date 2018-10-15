@@ -10,6 +10,7 @@
 #include "fsl_device_registers.h"
 #include "KL25Z/board.h"
 #include "Timer/ecc_irc.h"
+#include "Infrared/infrared.h"
 
 /* constant definitions */
 #define TIME_IN_MILISECONDS				30
@@ -20,12 +21,13 @@ volatile unsigned int eccLock = 1;
 
 /* Method signatures */
 void ecc_interruptionRoutine(void);
+void systemSetup(void);
 
 int main(void)
 {
 	/* System setup */
-	ecc_installISR(ECC_PERIOD, ecc_interruptionRoutine);
-
+	systemSetup();
+	
 	/* ECC Loop */
     while(1) {
 
@@ -37,6 +39,13 @@ int main(void)
 
     /* Never leave main */
     return 0;
+}
+
+void systemSetup(void){
+		/* Install the ECC interruption routine */
+		ecc_installISR(ECC_PERIOD, ecc_interruptionRoutine);
+		/* Setup the Infrared sensors */
+		infrared_setup();
 }
 
 /* Method to unlock the ECC and allow the cycle to reset */
