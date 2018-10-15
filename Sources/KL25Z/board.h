@@ -35,5 +35,15 @@
 
 /*         End of Infrared sensors definitions          */
 
+/*            Tachometers definitions          */
+#define TACHOMETER_PORT_BASE_PNT     PORTE
+#define TACHOMETER_CNT_BASE_PNT      PTE
+
+#define TACHOMETER_RIGHT_PIN         29U
+#define TACHOMETER_LEFT_PIN          30U
+
+#define TACHOMETER_ALT_COUNT         0x04u
+/*         End of Tachometers definitions        */
+
 
 #endif /* KL25Z_BOARD_H */
