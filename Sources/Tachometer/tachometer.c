@@ -52,27 +52,20 @@ void tachometer_setup(void){
     /* Also enables the interruption for channel */
     TPM0_C3SC &= ~(TPM_CnSC_MSB(1) | TPM_CnSC_ELSB(1));
   	TPM0_C3SC |= (TPM_CnSC_MSA(0) | TPM_CnSC_ELSA(1) | TPM_CnSC_CHIE(1));
+
+    /* Enables the interruption for TPM0 */
+    NVIC_EnableIRQ(TPM0_IRQn);
 }
 
 /* ************************************************ */
-/* Method name:        tachometer_getEngineSpeed    */
-/* Method description: returns the engine speed     */
+/* Method name:        TPM0_IRQHandler              */
+/* Method description: counts the number of pulses  */
+/*                     between 2 steps of encoder   */
 /* Input params:       n/a                          */
 /* Output params:      amount of turns              */
 /* ************************************************ */
-double tachometer_getEngineSpeed(engine e){
+void TPM0_IRQHandler(){
     // Get the number of pulses on the entrance according to the engine
-    int numberOfPulses = 0;
-    if(e == RIGHT){
-      numberOfPulses = TPM0_CNT;
-      // Resets the counter
-      TPM0_CNT = RESET_COUNTER;
-    }
-    else{
-      numberOfPulses = TPM2_CNT;
-      // Resets the counter
-      TPM2_CNT = RESET_COUNTER;
-    }
-    // Returns the number of full turns
-    return numberOfPulses/ENCODER_STEPS;
+    int numberOfPulses = TPM0_CNT;
+    return;
 }
