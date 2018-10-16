@@ -38,9 +38,11 @@ void pwm_setup(void){
 	TPM1_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);   //Prescale 1:1
 
 	/* This line configures the Channel 0*/
-	TPM1_C0SC |= (TPM_CnSC_MSB(0b1) | TPM_CnSC_MSA(0b0) | TPM_CnSC_ELSB(0b1) | TPM_CnSC_ELSA(0b0));
+	TPM1_C0SC &= ~(TPM_CnSC_MSA(0b0) | TPM_CnSC_ELSA(0b0));
+	TPM1_C0SC |= (TPM_CnSC_MSB(0b1) | TPM_CnSC_ELSB(0b1));
 	/* This line configures the Channel 1*/
-	TPM1_C1SC |= (TPM_CnSC_MSB(0b1) | TPM_CnSC_MSA(0b0) | TPM_CnSC_ELSB(0b1) | TPM_CnSC_ELSA(0b0));
+	TPM1_C1SC &= ~(TPM_CnSC_MSA(0b0) | TPM_CnSC_ELSA(0b0));
+	TPM1_C1SC |= (TPM_CnSC_MSB(0b1) | TPM_CnSC_ELSB(0b1));
 
 	/* Sets the Timer MOD */
 	TPM1_MOD = TPM_MOD_VAL;
