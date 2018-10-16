@@ -9,4 +9,13 @@
 #ifndef PWMCONTROLLER_H
 #define PWMCONTROLLER_H
 
+/* ************************************************ */
+/* Method name:        pwm_setup        				    */
+/* Method description: configures the TPM2 to work  */
+/*                     as PWM with 2 channels       */
+/* Input params:       n/a                          */
+/* Output params:       n/a                         */
+/* ************************************************ */
+void pwm_setup(void);
+
 #endif /*PWMCONTROLLER_H*/
