@@ -42,7 +42,7 @@
 #define TACHOMETER_RIGHT_PIN         29U
 #define TACHOMETER_LEFT_PIN          30U
 
-#define TACHOMETER_ALT_COUNT         0x04u
+#define TACHOMETER_ALT_COUNT         0x03u
 /*         End of Tachometers definitions        */
 
 /*            TPM definitions          */
@@ -50,13 +50,10 @@
 
 #define TPM_CMOD_ALT_EXTERNAL     0x02u          /* Select the TPM operation with external clock */
 #define TPM_CMOD_ALT_LPTMR        0x01u          /* Select the TPM operation with LPTMR */
-#define TPM_CPWMS_UP              0x00u          /* Select Up counting mode */
 #define TPM_CPWMS_DOWN            0x01u          /* Select Up-down counting mode */
 #define TPM_PS_ALT_DIV1           0x00u          /* Select pre-scaler division by 1 */
+#define TPM_PS_ALT_DIV128         0x08u          /* Select pre-scaler division by 128 */
 #define TPM_PWM_MUX_ALT           0x03u          /* Selects the PWM alternative for port */
-// Defines the external clock source for TPM0
-#define SOPT4_TPM0_CLKIN0_SEL 		~SIM_SOPT4_TPM0CLKSEL(0x01u)
-#define SOPT4_TPM2_CLKIN1_SEL 		SIM_SOPT4_TPM1CLKSEL(0x01u)
 
 /*         End of TPM definitions        */
 
