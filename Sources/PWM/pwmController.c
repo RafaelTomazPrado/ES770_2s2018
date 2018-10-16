@@ -10,7 +10,7 @@
 #include "KL25Z/board.h"
 
 /* Parameters */
-#define TPM_SRC_FREQ		4000000
+#define TPM_SRC_FREQ		8000000
 #define PWM_FREQ				400
 #define TPM_PRESCALE		1
 #define TPM_MOD_VAL 		(TPM_SRC_FREQ/(PWM_FREQ*TPM_PRESCALE))
