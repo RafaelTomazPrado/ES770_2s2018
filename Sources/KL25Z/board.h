@@ -57,5 +57,11 @@
 
 /*         End of TPM definitions        */
 
+/* Defines a type to map which engine is being manipulated */
+typedef enum{
+    RIGHT,
+    LEFT
+} engine;
+
 
 #endif /* KL25Z_BOARD_H */
