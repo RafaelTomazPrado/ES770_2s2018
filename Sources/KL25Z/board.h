@@ -45,16 +45,17 @@
 #define TACHOMETER_ALT_COUNT         0x04u
 /*         End of Tachometers definitions        */
 
-/*            PWM generator definitions          */
-
-/* TPM Configuration */
+/*            TPM definitions          */
 #define TPM_CMOD_ALT_EXTERNAL     0x02u          /* Select the TPM operation with external clock */
 #define TPM_CMOD_ALT_LPTMR        0x01u          /* Select the TPM operation with LPTMR */
 #define TPM_CPWMS_UP              0x00u          /* Select Up counting mode */
 #define TPM_CPWMS_DOWN            0x01u          /* Select Up-down counting mode */
 #define TPM_PS_ALT_DIV1           0x00u          /* Select pre-scaler division by 1 */
+// Defines the external clock source for TPM0
+#define SOPT4_TPM0_CLKIN0_SEL 		~SIM_SOPT4_TPM0CLKSEL(0x01u)
+#define SOPT4_TPM1_CLKIN1_SEL 		SIM_SOPT4_TPM1CLKSEL(0x01u)
 
-/*         End of PWM generator definitions        */
+/*         End of TPM definitions        */
 
 
 #endif /* KL25Z_BOARD_H */
