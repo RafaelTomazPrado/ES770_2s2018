@@ -3,11 +3,16 @@
 /* File description: controls the tachometer speed sensor.           */
 /* Author name:      Rafael Tomaz Prado                              */
 /* Creation date:    15out2018                                       */
-/* Revision date:    15out2018                                       */
+/* Revision date:    16out2018                                       */
 /* ***************************************************************** */
 
 #include "Tachometer/tachometer.h"
 #include "KL25Z/board.h"
+
+// Number of steps on one full encoder disk turn
+#define ENCODER_STEPS   20
+// Reset counter
+#define RESET_COUNTER   0
 
 /* ************************************************ */
 /* Method name:        tachometer_setup             */
@@ -47,4 +52,21 @@ void tachometer_setup(void){
   	TPM1_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_EXTERNAL);
   	/* Sets 1:1 prescaler */
   	TPM1_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);
+}
+
+double tachometer_getEngineSpeed(engine e){
+    // Get the number of pulses on the entrance according to the engine
+    int numberOfPulses = 0;
+    if(e == RIGHT){
+      numberOfPulses = TPM0_CNT;
+      // Resets the counter
+      TPM0_CNT = RESET_COUNTER;
+    }
+    else{
+      numberOfPulses = TPM1_CNT;
+      // Resets the counter
+      TPM1_CNT = RESET_COUNTER;
+    }
+    // Returns the number of full turns
+    return numberOfPulses/ENCODER_STEPS;
 }
