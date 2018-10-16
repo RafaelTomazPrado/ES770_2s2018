@@ -41,17 +41,17 @@ void tachometer_setup(void){
   	TPM0_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);
 
     /* Left Engine Tachometer */
-    /* Configures the TPM1 to work as a differente counter for external inputs */
+    /* Configures the TPM2 to work as a differente counter for external inputs */
     /* Set port as FTM_CLKIN1 */
   	PORTE_PCR30 = PORT_PCR_MUX(TACHOMETER_ALT_COUNT);
-    /* Un-gate TPM1 port clock */
-  	SIM_SCGC6 |= SIM_SCGC6_TPM1(CGC_CLOCK_ENABLED);
+    /* Un-gate TPM2 port clock */
+  	SIM_SCGC6 |= SIM_SCGC6_TPM2(CGC_CLOCK_ENABLED);
   	/* Puts a zero to the SOPT4 register on the 25th bit, setting TMP0 using CLKIN1. */
-  	SIM_SOPT4 |= SOPT4_TPM1_CLKIN1_SEL;
+  	SIM_SOPT4 |= SOPT4_TPM2_CLKIN1_SEL;
   	/* Sets timer with source as External Clock*/
-  	TPM1_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_EXTERNAL);
+  	TPM2_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_EXTERNAL);
   	/* Sets 1:1 prescaler */
-  	TPM1_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);
+  	TPM2_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);
 }
 
 double tachometer_getEngineSpeed(engine e){
@@ -63,9 +63,9 @@ double tachometer_getEngineSpeed(engine e){
       TPM0_CNT = RESET_COUNTER;
     }
     else{
-      numberOfPulses = TPM1_CNT;
+      numberOfPulses = TPM2_CNT;
       // Resets the counter
-      TPM1_CNT = RESET_COUNTER;
+      TPM2_CNT = RESET_COUNTER;
     }
     // Returns the number of full turns
     return numberOfPulses/ENCODER_STEPS;
