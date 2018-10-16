@@ -51,6 +51,7 @@
 #define TPM_CPWMS_UP              0x00u          /* Select Up counting mode */
 #define TPM_CPWMS_DOWN            0x01u          /* Select Up-down counting mode */
 #define TPM_PS_ALT_DIV1           0x00u          /* Select pre-scaler division by 1 */
+#define TPM_PWM_MUX_ALT           0x03u          /* Selects the PWM alternative for port */
 // Defines the external clock source for TPM0
 #define SOPT4_TPM0_CLKIN0_SEL 		~SIM_SOPT4_TPM0CLKSEL(0x01u)
 #define SOPT4_TPM1_CLKIN1_SEL 		SIM_SOPT4_TPM1CLKSEL(0x01u)

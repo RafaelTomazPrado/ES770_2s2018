@@ -25,14 +25,21 @@
 void pwm_setup(void){
   /* un-gate port clock*/
 	SIM_SCGC6 |= SIM_SCGC6_TPM1(CGC_CLOCK_ENABLED); //Enable clock for TPM1
+	/* un-gate portA clock*/
+	 SIM_SCGC5 |= SIM_SCGC5_PORTA(CGC_CLOCK_ENABLED);
 
+	/* Configures both ports as PWM*/
+  PORTA_PCR12 |= PORT_PCR_MUX(TPM_PWM_MUX_ALT);
+	PORTA_PCR13 |= PORT_PCR_MUX(TPM_PWM_MUX_ALT);
+
+	/* Configures the TPM1 */
 	TPM1_SC |= TPM_SC_CPWMS(TPM_CPWMS_UP);   //up counting mode
 	TPM1_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_LPTMR);   //LPTPM Counter increments on every LPTPM counter clock
 	TPM1_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);   //Prescale 1:1
 
-	/* This portion of code configures the Channel 0*/
+	/* This line configures the Channel 0*/
 	TPM1_C0SC |= (TPM_CnSC_MSB(0b1) | TPM_CnSC_MSA(0b0) | TPM_CnSC_ELSB(0b1) | TPM_CnSC_ELSA(0b0));
-	/* This portion of code configures the Channel 0*/
+	/* This line configures the Channel 1*/
 	TPM1_C1SC |= (TPM_CnSC_MSB(0b1) | TPM_CnSC_MSA(0b0) | TPM_CnSC_ELSB(0b1) | TPM_CnSC_ELSA(0b0));
 
 	/* Sets the Timer MOD */
@@ -44,6 +51,10 @@ void pwm_setup(void){
 	TPM1_C1V = 0x00;
 }
 
-void pwm_setDutyCycle(engine e){
-
+void pwm_setDutyCycle(engine e, unsigned int percentage){
+		// Calculates the proper value based on the MOD value
+		unsigned int dutyCycle = (percentage * TPM_MOD_VAL)/100;
+		// Sets the DC value to the designated engine
+		if(e == RIGHT)	TPM1_C0V = TPM_CnV_VAL(dutyCycle);
+		else TPM1_C1V = TPM_CnV_VAL(dutyCycle);
 }
