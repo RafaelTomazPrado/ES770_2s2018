@@ -22,36 +22,36 @@
 /* Output params:       n/a                         */
 /* ************************************************ */
 void tachometer_setup(void){
+    /* Un-gate TPM0 port clock */
+    SIM_SCGC6 |= SIM_SCGC6_TPM0(CGC_CLOCK_ENABLED);
     /* Un-gate tachometer port clock*/
     SIM_SCGC5 |= SIM_SCGC5_PORTE(CGC_CLOCK_ENABLED);
     /* Sets the TPM source as OSCERCLK (0x02u on bits 25 and 24) */
     SIM_SOPT2 |= SIM_SOPT2_TPMSRC(SOPT2_TPMSRC_OSCERCLK);
 
-    /* Right Engine Tachometer */
-    /* Configures the TPM0 to work as a counter for external inputs */
-    /* Set port as FTM_CLKIN0 */
-  	PORTE_PCR29 = PORT_PCR_MUX(TACHOMETER_ALT_COUNT);
-    /* Un-gate TPM0 port clock */
-  	SIM_SCGC6 |= SIM_SCGC6_TPM0(CGC_CLOCK_ENABLED);
-  	/* Puts a zero to the SOPT4 register on the 24th bit, setting TMP0 using CLKIN0. */
-  	SIM_SOPT4 &= SOPT4_TPM0_CLKIN0_SEL;
-  	/* Sets timer with source as External Clock*/
-  	TPM0_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_EXTERNAL);
-  	/* Sets 1:1 prescaler */
-  	TPM0_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);
+    /* Configures both ports to work with channels 2 and 3 */
+    PORTE_PCR29 = PORT_PCR_MUX(TACHOMETER_ALT_COUNT);
+    PORTE_PCR30 = PORT_PCR_MUX(TACHOMETER_ALT_COUNT);
 
-    /* Left Engine Tachometer */
-    /* Configures the TPM2 to work as a differente counter for external inputs */
-    /* Set port as FTM_CLKIN1 */
-  	PORTE_PCR30 = PORT_PCR_MUX(TACHOMETER_ALT_COUNT);
-    /* Un-gate TPM2 port clock */
-  	SIM_SCGC6 |= SIM_SCGC6_TPM2(CGC_CLOCK_ENABLED);
-  	/* Puts a zero to the SOPT4 register on the 25th bit, setting TMP0 using CLKIN1. */
-  	SIM_SOPT4 |= SOPT4_TPM2_CLKIN1_SEL;
+    /* Sets counter to count up */
+    /* ANDs the sdk mask negated to ensure the CPWMS bit is zero */
+    TPM0_SC &= ~TPM_SC_CPWMS(1);
   	/* Sets timer with source as External Clock*/
-  	TPM2_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_EXTERNAL);
+  	TPM0_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_LPTMR);
   	/* Sets 1:1 prescaler */
-  	TPM2_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);
+  	TPM0_SC |= TPM_SC_PS(TPM_PS_ALT_DIV128);
+    /* Resets the count */
+    TPM0_CNT = RESET_COUNTER;
+
+    /* Configures channel 2 to capture inputs on rising edges only */
+    /* Also enables the interruption for channel */
+    TPM0_C2SC &= ~(TPM_CnSC_MSB(1) | TPM_CnSC_ELSB(1));
+  	TPM0_C2SC |= (TPM_CnSC_MSA(0) | TPM_CnSC_ELSA(1) | TPM_CnSC_CHIE(1));
+
+    /* Configures channel 3 to capture inputs on rising edges only */
+    /* Also enables the interruption for channel */
+    TPM0_C3SC &= ~(TPM_CnSC_MSB(1) | TPM_CnSC_ELSB(1));
+  	TPM0_C3SC |= (TPM_CnSC_MSA(0) | TPM_CnSC_ELSA(1) | TPM_CnSC_CHIE(1));
 }
 
 /* ************************************************ */
