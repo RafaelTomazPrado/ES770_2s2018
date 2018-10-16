@@ -33,7 +33,7 @@ void pwm_setup(void){
 	PORTA_PCR13 |= PORT_PCR_MUX(TPM_PWM_MUX_ALT);
 
 	/* Configures the TPM1 */
-	TPM1_SC |= TPM_SC_CPWMS(TPM_CPWMS_UP);   //up counting mode
+	TPM1_SC &= ~TPM_SC_CPWMS(1);
 	TPM1_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_LPTMR);   //LPTPM Counter increments on every LPTPM counter clock
 	TPM1_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);   //Prescale 1:1
 
