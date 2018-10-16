@@ -9,6 +9,8 @@
 #ifndef TACHOMETER_H
 #define TACHOMETER_H
 
+#include "KL25Z/board.h"
+
 /* ************************************************ */
 /* Method name:        tachometer_setup             */
 /* Method description: configures the tachometer    */
@@ -17,5 +19,13 @@
 /* Output params:       n/a                         */
 /* ************************************************ */
 void tachometer_setup(void);
+
+/* ************************************************ */
+/* Method name:        tachometer_getEngineSpeed    */
+/* Method description: returns the engine speed     */
+/* Input params:       n/a                          */
+/* Output params:      amount of turns              */
+/* ************************************************ */
+double tachometer_getEngineSpeed(engine e);
 
 #endif /* TACHOMETER_H */

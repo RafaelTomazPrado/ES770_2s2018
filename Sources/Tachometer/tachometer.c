@@ -54,6 +54,12 @@ void tachometer_setup(void){
   	TPM2_SC |= TPM_SC_PS(TPM_PS_ALT_DIV1);
 }
 
+/* ************************************************ */
+/* Method name:        tachometer_getEngineSpeed    */
+/* Method description: returns the engine speed     */
+/* Input params:       n/a                          */
+/* Output params:      amount of turns              */
+/* ************************************************ */
 double tachometer_getEngineSpeed(engine e){
     // Get the number of pulses on the entrance according to the engine
     int numberOfPulses = 0;

@@ -9,6 +9,8 @@
 #ifndef PWMCONTROLLER_H
 #define PWMCONTROLLER_H
 
+#include "KL25Z/board.h"
+
 /* ************************************************ */
 /* Method name:        pwm_setup        				    */
 /* Method description: configures the TPM2 to work  */
@@ -17,5 +19,14 @@
 /* Output params:       n/a                         */
 /* ************************************************ */
 void pwm_setup(void);
+
+/* ************************************************ */
+/* Method name:        pwm_setDutyCycle  				    */
+/* Method description: sets the DC for engine       */
+/* Input params:       e - desired engine           */
+/*                     percentage - DC %            */
+/* Output params:       n/a                         */
+/* ************************************************ */
+void pwm_setDutyCycle(engine e, unsigned int percentage);
 
 #endif /*PWMCONTROLLER_H*/

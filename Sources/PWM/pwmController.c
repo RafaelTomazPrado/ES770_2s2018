@@ -7,7 +7,7 @@
 /* ***************************************************************** */
 
 #include "PWM/pwmController.h"
-#include "KL25Z/boarh.h"
+#include "KL25Z/board.h"
 
 /* Parameters */
 #define TPM_SRC_FREQ		4000000
@@ -51,6 +51,13 @@ void pwm_setup(void){
 	TPM1_C1V = 0x00;
 }
 
+/* ************************************************ */
+/* Method name:        pwm_setDutyCycle  				    */
+/* Method description: sets the DC for engine       */
+/* Input params:       e - desired engine           */
+/*                     percentage - DC %            */
+/* Output params:       n/a                         */
+/* ************************************************ */
 void pwm_setDutyCycle(engine e, unsigned int percentage){
 		// Calculates the proper value based on the MOD value
 		unsigned int dutyCycle = (percentage * TPM_MOD_VAL)/100;
