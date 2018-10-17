@@ -36,9 +36,9 @@ void tachometer_setup(void){
     /* Sets counter to count up */
     /* ANDs the sdk mask negated to ensure the CPWMS bit is zero */
     TPM0_SC &= ~TPM_SC_CPWMS(1);
-  	/* Sets timer with source as External Clock*/
+  	/* Sets timer with source as Low-power Timer*/
   	TPM0_SC |= TPM_SC_CMOD(TPM_CMOD_ALT_LPTMR);
-  	/* Sets 1:1 prescaler */
+  	/* Sets 1:128 prescaler */
   	TPM0_SC |= TPM_SC_PS(TPM_PS_ALT_DIV128);
     /* Resets the count */
     TPM0_CNT = RESET_COUNTER;
