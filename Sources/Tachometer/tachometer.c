@@ -13,6 +13,21 @@
 #define ENCODER_STEPS   20
 // Reset counter
 #define RESET_COUNTER   0
+// Clock frequency
+#define LPTMRFREQ 4000000
+
+// Channel event bits for verification
+#define CHANNEL2_FLAG (TPM0_C2SC >> 7)
+#define CHANNEL3_FLAG (TPM0_C3SC >> 7)
+
+
+/* Variables to control speed */
+static int leftPreviousCount = 0;
+static int rightPreviousCount = 0;
+static int currentCount = 0;
+
+static double leftSpeed = 0;
+static double rightSpeed = 0;
 
 /* ************************************************ */
 /* Method name:        tachometer_setup             */
@@ -62,10 +77,33 @@ void tachometer_setup(void){
 /* Method description: counts the number of pulses  */
 /*                     between 2 steps of encoder   */
 /* Input params:       n/a                          */
-/* Output params:      amount of turns              */
+/* Output params:      n/a                          */
 /* ************************************************ */
 void TPM0_IRQHandler(){
-    // Get the number of pulses on the entrance according to the engine
-    int numberOfPulses = TPM0_CNT;
-    return;
+    currentCount = TPM0_CNT;
+    if(CHANNEL2_FLAG){
+      /* Calculates the difference between two pulses */
+      int leftDiff = currentCount - leftPreviousCount;
+      /* Calculates the amount of clock for an entire turn*/
+      leftDiff = leftDiff * ENCODER_STEPS;
+      leftSpeed = LPTMRFREQ/leftDiff;
+    }
+    if(CHANNEL3_FLAG){
+      /* Calculates the difference between two pulses */
+      int rightDiff = currentCount - rightPreviousCount;
+      /* Calculates the amount of clock for an entire turn*/
+      rightDiff = rightDiff * ENCODER_STEPS;
+      rightSpeed = LPTMRFREQ/rightDiff;
+    }
+}
+
+/* ************************************************ */
+/* Method name:        tachometer_getEngineSpeed    */
+/* Method description: returns the engine speed     */
+/* Input params:       engine                       */
+/* Output params:      amount of turns              */
+/* ************************************************ */
+double tachometer_getEngineSpeed(engine e){
+  if(e == RIGHT_ENGINE) return rightSpeed;
+  else return leftSpeed;
 }

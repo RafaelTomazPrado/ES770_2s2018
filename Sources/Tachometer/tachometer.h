@@ -23,7 +23,7 @@ void tachometer_setup(void);
 /* ************************************************ */
 /* Method name:        tachometer_getEngineSpeed    */
 /* Method description: returns the engine speed     */
-/* Input params:       n/a                          */
+/* Input params:       engine                       */
 /* Output params:      amount of turns              */
 /* ************************************************ */
 double tachometer_getEngineSpeed(engine e);
