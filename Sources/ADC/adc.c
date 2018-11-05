@@ -24,13 +24,6 @@ void adc_initADCModule(void)
    /* un-gate port clock*/
    SIM_SCGC6 |= SIM_SCGC6_ADC0(CGC_CLOCK_ENABLED);	//Enable clock for ADC
 
-   /* un-gate port clock*/
-   SIM_SCGC5 |= SIM_SCGC5_PORTE(CGC_CLOCK_ENABLED);
-
-   /* set pin as ADC In */
-   PORTE_PCR20 |= PORT_PCR_MUX(0x00);   //Voltage Sensor
-   PORTE_PCR21 |= PORT_PCR_MUX(0x00);   //Temperature Sensor
-
    ADC0_CFG1 |= (ADC_CFG1_ADICLK(0b01) | ADC_CFG1_MODE(0b00) | ADC_CFG1_ADLSMP(0b0) | ADC_CFG1_ADIV(0b00) | ADC_CFG1_ADLPC(0b0));
 
    /*
