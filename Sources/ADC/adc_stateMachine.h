@@ -6,8 +6,10 @@
 /* Revision date:    05nov2018                                       */
 /* ***************************************************************** */
 
-#idndef ADC_STATEMACHINE_H
+#ifndef ADC_STATEMACHINE_H
 #define ADC_STATEMACHINE_H
+
+#include "ADC/adc.h"
 
 /* *************************************************** */
 /* Method name: 	   adcStateMachine_update            */

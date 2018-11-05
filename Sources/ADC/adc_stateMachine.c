@@ -7,7 +7,6 @@
 /* ***************************************************************** */
 
 #include "ADC/adc_stateMachine.h"
-#include "ADC/adc.h"
 
 /* This enumeration defines all states that are covered by the state machine into a custom type. */
 typedef enum
