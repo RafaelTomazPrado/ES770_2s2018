@@ -64,6 +64,6 @@ void pwm_setDutyCycle(engine e, unsigned int percentage){
 		// Calculates the proper value based on the MOD value
 		unsigned int dutyCycle = (percentage * TPM_MOD_VAL)/100;
 		// Sets the DC value to the designated engine
-		if(e == RIGHT)	TPM1_C0V = TPM_CnV_VAL(dutyCycle);
+		if(e == RIGHT_ENGINE)	TPM1_C0V = TPM_CnV_VAL(dutyCycle);
 		else TPM1_C1V = TPM_CnV_VAL(dutyCycle);
 }

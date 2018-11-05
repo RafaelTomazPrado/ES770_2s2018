@@ -59,8 +59,8 @@
 
 /* Defines a type to map which engine is being manipulated */
 typedef enum{
-    RIGHT,
-    LEFT
+    RIGHT_ENGINE,
+    LEFT_ENGINE
 } engine;
 
 
