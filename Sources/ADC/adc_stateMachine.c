@@ -12,14 +12,15 @@
 typedef enum
 {
     START,
-    CHECK,
     RESULT
 } conversion_state;
 
 /* Defines the current state of the machine. */
 static conversion_state currentState = START;
 /* Defines which sensor is being used as input */
-static sensor inputSensor = CENTER;
+const sensor sensorArray[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
+static sensor inputSensor = FAR_LEFT;
+static unsigned int pureIndex = 1;
 
 /* *************************************************** */
 /* Method name: 	   adcStateMachine_update            */
@@ -36,21 +37,21 @@ void adcStateMachine_update(void){
       /* Initializes the conversion */
       adc_initConversion(inputSensor);
       /* Updates to next state */
-      currentState = CHECK;
-      break;
-    case CHECK:
-      /* Verifies if conversion is done */
-      if(adc_isAdcDone()){
-        /* Updates to next state */
-        currentState = RESULT;
-      }
-      /* Stays on this state until conversion is finished. */
+      currentState = RESULT;
       break;
     case RESULT:
-      iConversionResult = adc_getConversionValue();
-      iConversionResult &= 0xFF;
-      /* Goes back to initial state to start another measurement */
-      currentState = START;
+      /* Verifies if conversion is done */
+      if(adc_isAdcDone()){
+        iConversionResult = adc_getConversionValue();
+        iConversionResult &= 0xFF;
+
+        /* TODO: Tratar resultado da conversão */
+
+        /* Updates the sensor being used as input automatically */
+        adc_updateInputSensor();
+        /* Goes back to initial state to start another measurement */
+        currentState = START;
+      }
       break;
   }/* end switch(currentState) */
 }
@@ -61,6 +62,7 @@ void adcStateMachine_update(void){
 /* Input params:	   n/a 			                         */
 /* Output params:	   n/a 			                         */
 /* *************************************************** */
-void adc_setInputSensor(sensor s){
-  inputSensor = s;
+void adc_updateInputSensor(){
+    inputSensor = sensorArray[pureIndex%5];
+    pureIndex++;
 }

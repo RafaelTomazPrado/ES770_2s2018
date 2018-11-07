@@ -20,12 +20,4 @@
 /* *************************************************** */
 void adcStateMachine_update(void);
 
-/* *************************************************** */
-/* Method name: 	   adcStateMachine_setSensor         */
-/* Method description: sets the input sensor           */
-/* Input params:	   n/a 			                         */
-/* Output params:	   n/a 			                         */
-/* *************************************************** */
-void adc_setInputSensor(sensor s);
-
 #endif /* ADC_STATEMACHINE_H */
