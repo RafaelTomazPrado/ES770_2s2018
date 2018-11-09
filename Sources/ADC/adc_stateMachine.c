@@ -18,7 +18,7 @@ typedef enum
 /* Defines the current state of the machine. */
 static conversion_state currentState = START;
 /* Defines which sensor is being used as input */
-const sensor sensorArray[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
+const sensor infraredArray[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
 static sensor inputSensor = FAR_LEFT;
 static unsigned int pureIndex = 1;
 
@@ -63,6 +63,6 @@ void adcStateMachine_update(void){
 /* Output params:	   n/a 			                         */
 /* *************************************************** */
 void adc_updateInputSensor(){
-    inputSensor = sensorArray[pureIndex%5];
+    inputSensor = infraredArray[pureIndex%5];
     pureIndex++;
 }
