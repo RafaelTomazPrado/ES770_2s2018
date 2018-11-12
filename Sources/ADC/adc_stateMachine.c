@@ -23,6 +23,17 @@ static sensor inputSensor = FAR_LEFT;
 static unsigned int pureIndex = 1;
 
 /* *************************************************** */
+/* Method name: 	   adcStateMachine_setSensor         */
+/* Method description: sets the input sensor           */
+/* Input params:	   n/a 			                         */
+/* Output params:	   n/a 			                         */
+/* *************************************************** */
+void updateInputSensor(){
+    inputSensor = infraredArray[pureIndex%5];
+    pureIndex++;
+}
+
+/* *************************************************** */
 /* Method name: 	   adcStateMachine_update            */
 /* Method description:  updates the current state      */
 /*                      based on the conversion status.*/
@@ -48,7 +59,7 @@ void adcStateMachine_update(void){
         /* TODO: Tratar resultado da conversão */
 
         /* Updates the sensor being used as input automatically */
-        adc_updateInputSensor();
+        updateInputSensor();
         /* Goes back to initial state to start another measurement */
         currentState = START;
       }
@@ -56,13 +67,3 @@ void adcStateMachine_update(void){
   }/* end switch(currentState) */
 }
 
-/* *************************************************** */
-/* Method name: 	   adcStateMachine_setSensor         */
-/* Method description: sets the input sensor           */
-/* Input params:	   n/a 			                         */
-/* Output params:	   n/a 			                         */
-/* *************************************************** */
-void adc_updateInputSensor(){
-    inputSensor = infraredArray[pureIndex%5];
-    pureIndex++;
-}
