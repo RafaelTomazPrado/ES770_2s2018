@@ -24,7 +24,7 @@ void adc_initADCModule(void)
    /* un-gate port clock*/
    SIM_SCGC6 |= SIM_SCGC6_ADC0(CGC_CLOCK_ENABLED);	//Enable clock for ADC
 
-   ADC0_CFG1 |= (ADC_CFG1_ADICLK(0b01) | ADC_CFG1_MODE(0b00) | ADC_CFG1_ADLSMP(0b0) | ADC_CFG1_ADIV(0b00) | ADC_CFG1_ADLPC(0b0));
+   ADC0_CFG1 |= (ADC_CFG1_ADICLK(0b01) | ADC_CFG1_MODE(0b11) | ADC_CFG1_ADLSMP(0b0) | ADC_CFG1_ADIV(0b00) | ADC_CFG1_ADLPC(0b0));
 
    /*
    ADC_CFG1_ADICLK(x)// bus/2 clock selection
@@ -65,7 +65,23 @@ void adc_initADCModule(void)
 /* ************************************************** */
 void adc_initConversion(sensor s)
 {
-   ADC0_SC1A &= (ADC_SC1_ADCH(s) | ADC_SC1_DIFF(0b0) | ADC_SC1_AIEN(0b0));
+  switch(s){
+    case FAR_LEFT:
+      ADC0_SC1A = (ADC_SC1_ADCH(0b00000) | ADC_SC1_DIFF(0b0) | ADC_SC1_AIEN(0b0));
+      break;
+    case LEFT:
+      ADC0_SC1A = (ADC_SC1_ADCH(0b00100) | ADC_SC1_DIFF(0b0) | ADC_SC1_AIEN(0b0));
+      break;
+    case CENTER:
+      ADC0_SC1A = (ADC_SC1_ADCH(0b00011) | ADC_SC1_DIFF(0b0) | ADC_SC1_AIEN(0b0));
+      break;
+    case RIGHT:
+      ADC0_SC1A = (ADC_SC1_ADCH(0b00111) | ADC_SC1_DIFF(0b0) | ADC_SC1_AIEN(0b0));
+      break;
+    case FAR_RIGHT:
+      ADC0_SC1A = (ADC_SC1_ADCH(0b01011) | ADC_SC1_DIFF(0b0) | ADC_SC1_AIEN(0b0));
+      break;
+  }
 
    /*
    ADC_SC1_COCO(x) // conversion complete flag HW-set
