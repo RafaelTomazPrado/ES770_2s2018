@@ -17,5 +17,10 @@
 /* ************************************************ */
 void infrared_setup(void);
 
+void infrared_callibrate(void);
+
+double getSensorMax();
+
+double getSensorMin();
 
 #endif /* INFRARED_H */
