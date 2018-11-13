@@ -26,8 +26,8 @@ static int leftPreviousCount = 0;
 static int rightPreviousCount = 0;
 static int currentCount = 0;
 
-static double leftSpeed = 0;
-static double rightSpeed = 0;
+static double leftSpeed = 0.0;
+static double rightSpeed = 0.0;
 
 /* ************************************************ */
 /* Method name:        tachometer_setup             */
@@ -82,6 +82,7 @@ void tachometer_setup(void){
 void TPM0_IRQHandler(){
     currentCount = TPM0_CNT;
     if(CHANNEL2_FLAG){
+      TPM0_C2SC = TPM_CnSC_CHF(1);
       /* Calculates the difference between two pulses */
       int leftDiff = currentCount - leftPreviousCount;
       /* Calculates the amount of clock for an entire turn*/
@@ -89,6 +90,7 @@ void TPM0_IRQHandler(){
       leftSpeed = LPTMRFREQ/leftDiff;
     }
     if(CHANNEL3_FLAG){
+      TPM0_C3SC = TPM_CnSC_CHF(1);
       /* Calculates the difference between two pulses */
       int rightDiff = currentCount - rightPreviousCount;
       /* Calculates the amount of clock for an entire turn*/
