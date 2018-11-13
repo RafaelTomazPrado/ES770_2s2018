@@ -11,8 +11,8 @@
 #include "ADC/adc.h"
 
 /* Holds the minimum and maximum value after the calibration */
-static double sensorMaxValue = 0;
-static double sensorMinValue = 999999999;
+static double sensorMaxValue[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+static double sensorMinValue[5] = {999999999,999999999, 999999999, 999999999, 999999999};
 
 /* Defines which sensor is being used as input */
 const sensor infraredArray[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
@@ -65,11 +65,11 @@ void infrared_callibrate(void){
             if(adc_isAdcDone()){
               conversionResult = adc_getConversionValue();
 
-              if(conversionResult > sensorMaxValue){
-                sensorMaxValue = conversionResult;
+              if(conversionResult > sensorMaxValue[i]){
+                sensorMaxValue[i] = conversionResult;
               }
-              if (conversionResult < sensorMinValue){
-                sensorMinValue = conversionResult;
+              if (conversionResult < sensorMinValue[i]){
+                sensorMinValue[i] = conversionResult;
               }
               /* Goes back to initial state to start another measurement */
               currentState = 0;
@@ -94,11 +94,11 @@ double infrared_updatePosition(void){
     conversionResult = adc_getConversionValue();
 
     /* TODO: Tratar resultado da conversão */
-    if(conversionResult > sensorMaxValue){
-      conversionResult = sensorMaxValue;
+    if(conversionResult > sensorMaxValue[i]){
+      conversionResult = sensorMaxValue[i];
     }
-    if(conversionResult < sensorMinValue){
-      conversionResult = sensorMinValue;
+    if(conversionResult < sensorMinValue[i]){
+      conversionResult = sensorMinValue[i];
     }
     sensorValues[i] = conversionResult;
 
