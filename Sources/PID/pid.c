@@ -9,10 +9,10 @@
 #include "PID/pid.h"
 
 /* PID sampling time */
-const double sampling = 0.0;
+const double sampling = 0.03;
 
 /* Variables for the position controller */
-const double posK = 0.0, posTd = 0.0, posTi = 0.0;
+const double posK = 30.0, posTd = 0.05, posTi = 999999999999;
 /* 0- current, 1- past, 2- past-1*/
 static double posError[3] = {0.0, 0.0, 0.0};
 /* Saves last output command */
@@ -29,7 +29,7 @@ double pid_posUpdate(double sensorReading){
   /* If the line is detected by the middle sensor */
   const double reference = 0.0;
   /* determines the current error */
-  posError[0] = sensorReading - reference;
+  posError[0] = reference - sensorReading;
   /* Constant calculations */
   double q0 = posK * (1 + sampling/(2*posTi) + posTd/sampling);
   double q1 = -1*posK*(1 + (2*posTd)/sampling - sampling/(2*posTi));
@@ -44,9 +44,11 @@ double pid_posUpdate(double sensorReading){
   return uk;
 }
 
+/* Should verify which engine is being controlled and generate an opposed signal to the other*/
+
 double pid_spdUpdate(double sensorReading){
   /* Changes the reference for the speed */
-  const double reference = 0.0;
+  const double reference = 100.0;
   /* determines the current error */
   spdError[0] = sensorReading - reference;
   /* Constant calculations */
