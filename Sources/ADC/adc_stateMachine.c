@@ -9,33 +9,11 @@
 #include "ADC/adc_stateMachine.h"
 #include "Infrared/infrared.h"
 
-/* This enumeration defines all states that are covered by the state machine into a custom type. */
-typedef enum
-{
-    START,
-    RESULT
-} conversion_state;
-
-/* Defines the current state of the machine. */
-static conversion_state currentState = START;
 /* Defines which sensor is being used as input */
 const sensor infraredArray[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
-static sensor inputSensor = FAR_LEFT;
-static unsigned int pureIndex = 1;
 
 const int sensorWeights[5] = {-2,-1,0,1,2};
 static double sensorValues[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
-
-/* *************************************************** */
-/* Method name: 	   adcStateMachine_setSensor         */
-/* Method description: sets the input sensor           */
-/* Input params:	   n/a 			                         */
-/* Output params:	   n/a 			                         */
-/* *************************************************** */
-void updateInputSensor(){
-    inputSensor = infraredArray[pureIndex%5];
-    pureIndex++;
-}
 
 /* *************************************************** */
 /* Method name: 	   adcStateMachine_update            */
@@ -46,36 +24,22 @@ void updateInputSensor(){
 /* *************************************************** */
 void adcStateMachine_update(void){
   double conversionResult;
-  /* Verifies current state */
-  switch (currentState) {
-    case START:
-      /* Initializes the conversion */
-      adc_initConversion(inputSensor);
-      /* Updates to next state */
-      currentState = RESULT;
-      break;
-    case RESULT:
-      /* Verifies if conversion is done */
-      if(adc_isAdcDone()){
-        conversionResult = adc_getConversionValue();
 
-        /* TODO: Tratar resultado da conversão */
-        if(conversionResult > getSensorMax()){
-          conversionResult = getSensorMax();
-        }
-        if(conversionResult < getSensorMin()){
-          conversionResult = getSensorMin();
-        }
+  for(int i=0; i<5; i++){
+    adc_initConversion(infraredArray[i]);
+    /* Wait until conversion is done */
+    while(!adc_isAdcDone());
+    conversionResult = adc_getConversionValue();
 
-        sensorValues[pureIndex%5] = conversionResult;
-
-        /* Updates the sensor being used as input automatically */
-        updateInputSensor();
-        /* Goes back to initial state to start another measurement */
-        currentState = START;
-      }
-      break;
-  }/* end switch(currentState) */
+    /* TODO: Tratar resultado da conversão */
+    if(conversionResult > getSensorMax()){
+      conversionResult = getSensorMax();
+    }
+    if(conversionResult < getSensorMin()){
+      conversionResult = getSensorMin();
+    }
+    sensorValues[i] = conversionResult;
+  }
 }
 
 double getLinePosition(){
