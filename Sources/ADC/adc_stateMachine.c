@@ -7,6 +7,7 @@
 /* ***************************************************************** */
 
 #include "ADC/adc_stateMachine.h"
+#include "Infrared/infrared.h"
 
 /* This enumeration defines all states that are covered by the state machine into a custom type. */
 typedef enum
@@ -21,6 +22,9 @@ static conversion_state currentState = START;
 const sensor infraredArray[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
 static sensor inputSensor = FAR_LEFT;
 static unsigned int pureIndex = 1;
+
+const int sensorWeights[5] = {-2,-1,0,1,2};
+static double sensorValues[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
 
 /* *************************************************** */
 /* Method name: 	   adcStateMachine_setSensor         */
@@ -41,7 +45,7 @@ void updateInputSensor(){
 /* Output params:	   n/a 			                         */
 /* *************************************************** */
 void adcStateMachine_update(void){
-  int iConversionResult;
+  double conversionResult;
   /* Verifies current state */
   switch (currentState) {
     case START:
@@ -53,10 +57,17 @@ void adcStateMachine_update(void){
     case RESULT:
       /* Verifies if conversion is done */
       if(adc_isAdcDone()){
-        iConversionResult = adc_getConversionValue();
-        iConversionResult &= 0xFF;
+        conversionResult = adc_getConversionValue();
 
         /* TODO: Tratar resultado da conversão */
+        if(conversionResult > getSensorMax()){
+          conversionResult = getSensorMax();
+        }
+        if(conversionResult < getSensorMin()){
+          conversionResult = getSensorMin();
+        }
+
+        sensorValues[pureIndex%5] = conversionResult;
 
         /* Updates the sensor being used as input automatically */
         updateInputSensor();
@@ -67,3 +78,11 @@ void adcStateMachine_update(void){
   }/* end switch(currentState) */
 }
 
+double getLinePosition(){
+    double pos = 0.0;
+    /* Calculates position using the sensorWeights */
+    for(int i=0;i<5;i++){
+      pos += sensorValues[i]*sensorWeights[i];
+    }
+    return pos;
+}

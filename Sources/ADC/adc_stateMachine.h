@@ -20,4 +20,5 @@
 /* *************************************************** */
 void adcStateMachine_update(void);
 
+double getLinePosition();
 #endif /* ADC_STATEMACHINE_H */
