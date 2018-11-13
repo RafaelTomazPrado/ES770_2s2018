@@ -10,8 +10,19 @@
 #include "KL25Z/board.h"
 #include "ADC/adc.h"
 
+/* Holds the minimum and maximum value after the calibration */
 static double sensorMaxValue = 0;
 static double sensorMinValue = 999999999;
+
+/* Defines which sensor is being used as input */
+const sensor infraredArray[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
+/* Define the weight each sensor has on the position calculation */
+const int sensorWeights[5] = {-2,-1,0,1,2};
+/* Holds the latest reading for each sensor */
+static double sensorValues[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+
+/* Callibration method signature */
+void infrared_callibrate(void);
 
 /* ************************************************ */
 /* Method name:        infrared_setup               */
@@ -29,13 +40,14 @@ void infrared_setup(void){
     PORTE_PCR22 = PORT_PCR_MUX(INFRARED_MUX_ALT);
     PORTE_PCR23 = PORT_PCR_MUX(INFRARED_MUX_ALT);
     PORTC_PCR2 = PORT_PCR_MUX(INFRARED_MUX_ALT);
+
+    /* After each pin has been setup, calibrates the sensors */
+    infrared_callibrate();
 }
 
 void infrared_callibrate(void){
   double conversionResult;
   int currentState = 0;
-  /* Defines which sensor is being used as input */
-  sensor array[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
 
   for(int i=0;i<5;i++){
       int j = 300;
@@ -44,7 +56,7 @@ void infrared_callibrate(void){
         switch (currentState) {
           case 0:
             /* Initializes the conversion */
-            adc_initConversion(array[i]);
+            adc_initConversion(infraredArray[i]);
             /* Updates to next state */
             currentState = 1;
             break;
@@ -69,11 +81,30 @@ void infrared_callibrate(void){
     }
 }
 
+double infrared_updatePosition(void){
+  double conversionResult;
 
-double getSensorMax(){
-  return sensorMaxValue;
-}
+  double pos = 0.0;
+  double sum = 0.0;
 
-double getSensorMin(){
-  return sensorMinValue;
+  for(int i=0; i<5; i++){
+    adc_initConversion(infraredArray[i]);
+    /* Wait until conversion is done */
+    while(!adc_isAdcDone());
+    conversionResult = adc_getConversionValue();
+
+    /* TODO: Tratar resultado da conversão */
+    if(conversionResult > sensorMaxValue){
+      conversionResult = sensorMaxValue;
+    }
+    if(conversionResult < sensorMinValue){
+      conversionResult = sensorMinValue;
+    }
+    sensorValues[i] = conversionResult;
+
+    pos += sensorValues[i]*sensorWeights[i];
+    sum += sensorValues[i];
+  }
+
+  return pos/sum;
 }

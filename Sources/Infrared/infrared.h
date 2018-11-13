@@ -17,10 +17,6 @@
 /* ************************************************ */
 void infrared_setup(void);
 
-void infrared_callibrate(void);
-
-double getSensorMax();
-
-double getSensorMin();
+double infrared_updatePosition(void);
 
 #endif /* INFRARED_H */
