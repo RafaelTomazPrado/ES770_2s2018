@@ -17,6 +17,7 @@
 #include "Tachometer/tachometer.h"
 #include "ADC/adc.h"
 #include "PID/pid.h"
+#include "KL25Z/rgbLED.h"
 
 /* constant definitions */
 #define TIME_IN_MILISECONDS				30
@@ -98,6 +99,8 @@ void systemSetup(void){
 		tachometer_setup();
 		/* Install the ECC interruption routine */
 		ecc_installISR(ECC_PERIOD, ecc_interruptionRoutine);
+		/* Initializes the RGB Led module */
+		rgbLED_initRGBLED();
 		/* Configures a port to be used to measure ECC time */
 		PORTC_PCR1 = PORT_PCR_MUX(1);
 		GPIOC_PDDR |= (1 << 1);
