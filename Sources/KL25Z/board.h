@@ -45,5 +45,13 @@ typedef enum{
     LEFT_ENGINE
 } engine;
 
+/* Define a sensor type */
+typedef enum{
+  FAR_LEFT,
+  LEFT,
+  CENTER,
+  RIGHT,
+  FAR_RIGHT
+}sensor;
 
 #endif /* KL25Z_BOARD_H */

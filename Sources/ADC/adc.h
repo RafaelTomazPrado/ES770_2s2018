@@ -10,13 +10,7 @@
 #ifndef ADC_H
 #define ADC_H
 
-typedef enum{
-  FAR_LEFT,
-  LEFT,
-  CENTER,
-  RIGHT,
-  FAR_RIGHT
-}sensor;
+#include "KL25Z/board.h"
 
 /* ************************************************** */
 /* Method name: 	   adc_initADCModule          */

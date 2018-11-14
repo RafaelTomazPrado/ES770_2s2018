@@ -1,4 +1,4 @@
-#include "MCG/delay.h"
+#include "KL25Z/delay.h"
 
 /* ************************************************ */
 /* Method name:        util_genDelay088us           */
