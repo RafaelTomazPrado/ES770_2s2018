@@ -8,6 +8,7 @@
 
 #include "KL25Z/board.h"
 #include "KL25Z/delay.h"
+#include "KL25Z/rgbLED.h"
 #include "Infrared/infrared.h"
 #include "ADC/adc.h"
 
@@ -76,9 +77,10 @@ void infrared_setup(void){
 void infrared_calibrateAll(void){
   double conversionResult;
 
+  /* Turns on Blue LED*/
+  rgbLED_setRGBLED(0,0,1);
   /* Generates a delay of 2s before it starts callibrating */
-  util_genDelayOf(2000);
-
+  util_genDelayOf(3000);
   /* calibrates the white (line) values */
   for(int i=0;i<5;i++){
       /*  Measures 300 times for each sensor */
@@ -97,10 +99,10 @@ void infrared_calibrateAll(void){
         }
       }
     }
-
+    /* Turn on Red LED */
+    rgbLED_setRGBLED(1,0,0);
     /* Generates a 5s delay to change callibration position */
-    util_genDelayOf(5000);
-
+    util_genDelayOf(3000);
     /* calibrates the black (out of the line) values */
     for(int i=0;i<5;i++){
         /*  Measures 300 times for each sensor */
@@ -119,9 +121,12 @@ void infrared_calibrateAll(void){
           }
         }
       }
-
+      /* Turn on Green LED */
+      rgbLED_setRGBLED(0,1,0);
       /* Generates a delay to place the robot on the line to start*/
-      util_genDelayOf(5000);
+      util_genDelayOf(4000);
+      /* Turn off LED */
+      rgbLED_setRGBLED(0,0,0);
 }
 
 /* ************************************************ */
