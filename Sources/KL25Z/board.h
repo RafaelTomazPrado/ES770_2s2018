@@ -34,7 +34,7 @@
 #define TPM_CMOD_ALT_LPTMR        0x01u          /* Select the TPM operation with LPTMR */
 #define TPM_CPWMS_DOWN            0x01u          /* Select Up-down counting mode */
 #define TPM_PS_ALT_DIV1           0x00u          /* Select pre-scaler division by 1 */
-#define TPM_PS_ALT_DIV128         0x08u          /* Select pre-scaler division by 128 */
+#define TPM_PS_ALT_DIV128         0x07u          /* Select pre-scaler division by 128 */
 #define TPM_PWM_MUX_ALT           0x03u          /* Selects the PWM alternative for port */
 
 /*         End of TPM definitions        */
