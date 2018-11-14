@@ -6,13 +6,19 @@
 /* Revision date:    02out2018                                       */
 /* ***************************************************************** */
 
-#include "Infrared/infrared.h"
 #include "KL25Z/board.h"
+#include "KL25Z/delay.h"
+#include "Infrared/infrared.h"
 #include "ADC/adc.h"
 
 /* Holds the minimum and maximum value after the calibration */
 static double sensorMaxValue[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
-static double sensorMinValue[5] = {999999999,999999999, 999999999, 999999999, 999999999};
+static double sensorMinValue[5] = {999999999.0,999999999.0, 999999999.0, 999999999.0, 999999999.0};
+
+/* Used in single calibration method */
+static int isUsingSingleCalibration = 0;
+static double overallMax = 0.0;
+static double overallMin = 999999999.0;
 
 /* Defines which sensor is being used as input */
 const sensor infraredArray[5] = {FAR_LEFT,LEFT,CENTER,RIGHT,FAR_RIGHT};
@@ -22,7 +28,19 @@ const int sensorWeights[5] = {-2,-1,0,1,2};
 static double sensorValues[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
 
 /* Callibration method signature */
-void infrared_callibrate(void);
+void infrared_calibrateAll(void);
+void infrared_calibrateSingle(void);
+
+/* ************************************************ */
+/* Method name:        useSingleCalibration         */
+/* Method description: decides if will use multi    */
+/*                     sensor calibration           */
+/* Input params:       decision: (yes/no) - (>1/0)  */
+/* Output params:      n/a                          */
+/* ************************************************ */
+void infrared_useSingleCalibration(int decision){
+  isUsingSingleCalibration = decision;
+}
 
 /* ************************************************ */
 /* Method name:        infrared_setup               */
@@ -42,45 +60,112 @@ void infrared_setup(void){
     PORTC_PCR2 = PORT_PCR_MUX(INFRARED_MUX_ALT);
 
     /* After each pin has been setup, calibrates the sensors */
-    infrared_callibrate();
+    if(isUsingSingleCalibration)
+      infrared_calibrateSingle();
+    else
+      infrared_calibrateAll();
 }
 
-void infrared_callibrate(void){
+/* ************************************************ */
+/* Method name:        infrared_calibrateAll        */
+/* Method description: measures the maxium and min  */
+/*                     values for each sensor       */
+/* Input params:       n/a                          */
+/* Output params:       n/a                         */
+/* ************************************************ */
+void infrared_calibrateAll(void){
   double conversionResult;
-  int currentState = 0;
 
+  /* Generates a delay of 2s before it starts callibrating */
+  util_genDelayOf(2000);
+
+  /* calibrates the white (line) values */
   for(int i=0;i<5;i++){
+      /*  Measures 300 times for each sensor */
       int j = 300;
       while(j--){
-        /* Verifies current state */
-        switch (currentState) {
-          case 0:
-            /* Initializes the conversion */
-            adc_initConversion(infraredArray[i]);
-            /* Updates to next state */
-            currentState = 1;
-            break;
-          case 1:
-            /* Verifies if conversion is done */
-            if(adc_isAdcDone()){
-              conversionResult = adc_getConversionValue();
+        /* Initializes the conversion */
+        adc_initConversion(infraredArray[i]);
+        /* wait until it's done*/
+        while(!adc_isAdcDone());
+        /* Gets the result */
+        conversionResult = adc_getConversionValue();
+        /* If its value is higher than the highest for that sensor */
+        if(conversionResult > sensorMaxValue[i]){
+          /* Updates the maximum value */
+          sensorMaxValue[i] = conversionResult;
+        }
+      }
+    }
 
-              if(conversionResult > sensorMaxValue[i]){
-                sensorMaxValue[i] = conversionResult;
-              }
-              if (conversionResult < sensorMinValue[i]){
-                sensorMinValue[i] = conversionResult;
-              }
-              /* Goes back to initial state to start another measurement */
-              currentState = 0;
-            }
-            break;
-        }/* end switch(currentState) */
+    /* Generates a 5s delay to change callibration position */
+    util_genDelayOf(5000);
+
+    /* calibrates the black (out of the line) values */
+    for(int i=0;i<5;i++){
+        /*  Measures 300 times for each sensor */
+        int j = 300;
+        while(j--){
+          /* Initializes the conversion */
+          adc_initConversion(infraredArray[i]);
+          /* wait until it's done*/
+          while(!adc_isAdcDone());
+          /* Gets the result */
+          conversionResult = adc_getConversionValue();
+          /* If its value is higher than the highest for that sensor */
+          if(conversionResult < sensorMinValue[i]){
+            /* Updates the maximum value */
+            sensorMinValue[i] = conversionResult;
+          }
+        }
       }
 
+      /* Generates a delay to place the robot on the line to start*/
+      util_genDelayOf(5000);
+}
+
+/* ************************************************ */
+/* Method name:        infrared_calibrateSingle     */
+/* Method description: measures the maxium and min  */
+/*                     values for each sensor       */
+/* Input params:       n/a                          */
+/* Output params:       n/a                         */
+/* ************************************************ */
+void infrared_calibrateSingle(void){
+  double conversionResult;
+
+  /* calibrates the white (line) values */
+  for(int i=0;i<5;i++){
+      /*  Measures 300 times for each sensor */
+      int j = 300;
+      while(j--){
+        /* Initializes the conversion */
+        adc_initConversion(infraredArray[i]);
+        /* wait until it's done*/
+        while(!adc_isAdcDone());
+        /* Gets the result */
+        conversionResult = adc_getConversionValue();
+        /* If its value is higher than the highest */
+        if(conversionResult > overallMax){
+          /* Updates the maximum value */
+          overallMax = conversionResult;
+        }
+        if(conversionResult < overallMin){
+          /* Updates the maximum value */
+          overallMin = conversionResult;
+        }
+      }
     }
 }
 
+
+/* ************************************************ */
+/* Method name:        infrared_updatePosition      */
+/* Method description: reads sensors and calculates */
+/*                     line position                */
+/* Input params:       n/a                          */
+/* Output params:  line position relative to center */
+/* ************************************************ */
 double infrared_updatePosition(void){
   double conversionResult;
 
@@ -88,17 +173,27 @@ double infrared_updatePosition(void){
   double sum = 0.0;
 
   for(int i=0; i<5; i++){
+    /* Start conversion for sensor i */
     adc_initConversion(infraredArray[i]);
     /* Wait until conversion is done */
     while(!adc_isAdcDone());
+    /* gets the conversion result */
     conversionResult = adc_getConversionValue();
-
-    /* TODO: Tratar resultado da conversão */
-    if(conversionResult > sensorMaxValue[i]){
-      conversionResult = sensorMaxValue[i];
-    }
-    if(conversionResult < sensorMinValue[i]){
-      conversionResult = sensorMinValue[i];
+    /* Saturates the upper and lower readings to calibration values */
+    if(isUsingSingleCalibration){
+      if(conversionResult > overallMax){
+        conversionResult = overallMax;
+      }
+      if(conversionResult < overallMin){
+        conversionResult = overallMin;
+      }
+    }else{
+      if(conversionResult > sensorMaxValue[i]){
+        conversionResult = sensorMaxValue[i];
+      }
+      if(conversionResult < sensorMinValue[i]){
+        conversionResult = sensorMinValue[i];
+      }
     }
     sensorValues[i] = conversionResult;
 
