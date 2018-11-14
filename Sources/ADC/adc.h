@@ -11,11 +11,11 @@
 #define ADC_H
 
 typedef enum{
-  FAR_LEFT = 0b00000,
-  LEFT = 0b00100,
-  CENTER = 0b00011,
-  RIGHT = 0b00111,
-  FAR_RIGHT = 0b01011
+  FAR_LEFT,
+  LEFT,
+  CENTER,
+  RIGHT,
+  FAR_RIGHT
 }sensor;
 
 /* ************************************************** */
