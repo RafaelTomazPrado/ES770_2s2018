@@ -206,5 +206,9 @@ double infrared_updatePosition(void){
     sum += sensorValues[i];
   }
 
+  if((sensorValues[0] > 0.9*overallMax && sensorValues[1] > 0.9*overallMax && sensorValues[2] > 0.9*overallMax && sensorValues[3] > 0.9*overallMax && sensorValues[4] > 0.9*overallMax) || (sensorValues[0] < 1.1*overallMin && sensorValues[1] < 1.1*overallMin && sensorValues[2] < 1.1*overallMin && sensorValues[3] < 1.1*overallMin && sensorValues[4] < 1.1*overallMin)){
+    return -99.33;
+  }
+
   return pos/sum;
 }

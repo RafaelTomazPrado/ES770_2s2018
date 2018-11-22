@@ -34,8 +34,10 @@ void sensorTest(double currentPosition);
 void eccTimeTest(int on);
 
 int main(void){
+	int count = 0;
+
 	/* Selects type of callibration to be performed by the sensors */
-	infrared_useSingleCalibration(0);
+	infrared_useSingleCalibration(1);
 	/* System setup */
 	systemSetup();
 
@@ -50,6 +52,16 @@ int main(void){
 			/* Acquires current position from sensors */
 			currentPosition = infrared_updatePosition();
 			// sensorTest(currentPosition);
+			if(currentPosition == -99.33){
+				count++;
+				if(count>3){
+					pwm_setDutyCycle(RIGHT_ENGINE, 0);
+					pwm_setDutyCycle(LEFT_ENGINE, 0);
+					return;
+				}
+			}else{
+				count=0;
+			}
 
 			/* Inputs on PID controller and gets control signal */
 			posControl = pid_posUpdate(currentPosition);
@@ -93,17 +105,18 @@ void systemSetup(void){
 		adc_initADCModule();
 		/* Setup the PWM generator */
 		pwm_setup();
-		/* Setup the Infrared sensors */
-		infrared_setup();
 		/* Setup the tachometers */
 		tachometer_setup();
 		/* Install the ECC interruption routine */
 		ecc_installISR(ECC_PERIOD, ecc_interruptionRoutine);
 		/* Initializes the RGB Led module */
-		rgbLED_initRGBLED();
-		/* Configures a port to be used to measure ECC time */
-		PORTC_PCR1 = PORT_PCR_MUX(1);
-		GPIOC_PDDR |= (1 << 1);
+		// rgbLED_initRGBLED();
+		// /* Configures a port to be used to measure ECC time */
+		// PORTC_PCR1 = PORT_PCR_MUX(1);
+		// GPIOC_PDDR |= (1 << 1);
+		// rgbLED_setRGBLED(0,0,0);
+		/* Setup the Infrared sensors */
+		infrared_setup();
 }
 
 /* Method to unlock the ECC and allow the cycle to reset */
