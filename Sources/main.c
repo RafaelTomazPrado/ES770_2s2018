@@ -22,7 +22,9 @@
 /* constant definitions */
 #define TIME_IN_MILISECONDS				30
 #define ECC_PERIOD   TIME_IN_MILISECONDS * 1000 /* micro seconds */
-#define PWM_REFERENCE 60
+#define PWM_REFERENCE 70
+#define NUMBER_OF_LAPS 2
+#define NUMBER_OF_MEASUREMENTS 4
 
 /* Variables */
 volatile unsigned int eccLock = 1;
@@ -34,7 +36,8 @@ void sensorTest(double currentPosition);
 void eccTimeTest(int on);
 
 int main(void){
-	int count = 0;
+	int measurements = 0;
+	int laps = 1;
 
 	/* Selects type of callibration to be performed by the sensors */
 	infrared_useSingleCalibration(1);
@@ -53,14 +56,18 @@ int main(void){
 			currentPosition = infrared_updatePosition();
 			// sensorTest(currentPosition);
 			if(currentPosition == -99.33){
-				count++;
-				if(count>3){
-					pwm_setDutyCycle(RIGHT_ENGINE, 0);
-					pwm_setDutyCycle(LEFT_ENGINE, 0);
-					return;
+				measurements++;
+				if(measurements>NUMBER_OF_MEASUREMENTS){
+					laps++;
+					measurements=0;
+					if(laps>NUMBER_OF_LAPS){
+						pwm_setDutyCycle(RIGHT_ENGINE, 0);
+						pwm_setDutyCycle(LEFT_ENGINE, 0);
+						return;
+					}
 				}
 			}else{
-				count=0;
+				measurements=0;
 			}
 
 			/* Inputs on PID controller and gets control signal */
